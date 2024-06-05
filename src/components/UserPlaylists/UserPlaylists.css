@@ -1,0 +1,62 @@
+.UserPlaylists {
+    width: 33%;
+    border: 3px solid lime;
+    padding: .75rem;
+    background-color: #EC1372;
+    text-align: center;
+    max-height: 700px;
+    overflow-y: auto; 
+}
+
+.UserPlaylists h1 {
+    text-align: left;
+}
+
+.UserPlaylists h2 {
+    text-align: left;
+}
+
+.UserPlaylists ul {
+    padding: 0;
+    text-align: left;
+}
+
+.UserPlaylists li {
+    font-size: 1.33rem;
+    margin: 15px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.UserPlaylists li:hover {
+    color: #1372EC;
+}
+
+.new-playlist {
+    width: 33%;
+    min-width: 9rem;
+    margin-top: 1rem;
+    padding: .5rem 0;
+    background-color: #EC2113;
+    color: white;
+    text-align: center;
+    font-size: .66rem;
+    transition: .30 sec;
+    border: 3px solid lime;
+    border-radius: 10px;
+}
+
+.new-playlist: hover {
+    background-color: #1372EC;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+@media only screen and (max-width: 1020px) {
+    .UserPlaylists {
+        width: 90%;
+    }
+}
