@@ -1,4 +1,5 @@
 import React from 'react';
+import './UserPlaylists.css';
 
 function UserPlaylists({ playlists, onSelect, onCreateNewPlaylist }) {
     return (
