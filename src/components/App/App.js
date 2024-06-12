@@ -4,10 +4,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './../../css/ToastifyCustom.css'
 
-import SearchBar from './../SearchBar/Searchbar';
+import SearchBar from './../SearchBar/SearchBar';
 import SearchResults from './../SearchResults/SearchResults';
 import Playlist from './..Playlist/Playlist';
-import UserPlaylist '../UserPlaylists/UserPlaylists';
+import UserPlaylist from "../UserPlaylists/UserPlaylists";
 import { Spotify } from "../../util/spotify";
 
 function App() {
@@ -84,10 +84,56 @@ function App() {
             className: 'custom-toast',
             progressClassName: 'custom-progress-bar',
           });
-          setUserPlaylists((prevPlaylists) +>)
+          setUserPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
+          fetchUserPlaylists();
         })
+        .catch((error) => {
+          console.error("Error saving new playlist:", error);
+        });
     }
   
-  })
+  }, [playlistName, playlistTracks, userPlaylists]);
 
+  const search = useCallback((term) => {
+    Spotify.search(term).then(setSearchResults);
+  }, []);
+  
+  const selectPlaylist = (selectedPlaylist) => {
+    setPlaylistName(selectedPlaylist.name);
+    setPlaylistTracks(selectedPlaylist.tracks);
+  };
+
+  const createNewPlaylist= () => {
+    setPlaylistName("New Playlist");
+    setPlaylistTracks([]);
+  };
+
+  return (
+    <div>
+      <h1>
+        UP Serve!
+      </h1>
+      <div className="App">
+        <SearchBar onSearch={search} />
+        <ToastContainer />
+        <div className="App-playlist">
+          <SearchResults searchResults={searchResults} onAdd={addTrack} />
+          <Playlist
+            playlistName={playlistName}
+            playlistTracks={playlistTracks}
+            onRemove={removeTrack}
+            onNameChange={updatePlaylistName}
+            onSave={savePlaylist}
+          />
+          <UserPlaylist
+            playlists={userPlaylists}
+            onSelect={selectPlaylist}
+            onCreateNewPlaylist={createNewPlaylist}
+          /> 
+        </div>
+      </div>
+    </div>
+  );
 }
+
+export default App;
