@@ -19,11 +19,94 @@ const Spotify = {
             window.location = accessUrl;
         }
     },
-    
+
     search(term) {
         const accessToken = Spotify.getAccessToken();
         return fetch(`http://api.spotify.com/v1/serach?type=track&q=${term}`, {
             headers: { Authorization}
         })
-    }
-}
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if(data.tracks && data.tracks.items) {
+                return data.tracks.items.map(track => ({
+                    id: track.id,
+                    name: track.name,
+                    artist: track.artist.map(artist => artist.name).join(', '),
+                    album: track.album.name,
+                    uri: track.uri
+                }));
+            } else {
+                return [];
+            }
+        });
+    },
+
+    savePlaylist(name, trackURIs) {
+        if (!name || !trackURIs.length) {
+            return Promise.resolve();
+        }
+
+        const accessToken = this.getAccessToken();
+        const headers = { Authorization: `Bearer ${accessToken}` };
+        let userId;
+
+        return fetch('https://api.spotify.com/v1/me', { headers: headers })
+        .then(response => response.json())
+        .then(jsonResponse => {
+            userId = jsonResponse.id;
+            return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ name: name}),
+            });
+        })
+        .then(response => response.json())
+        .then(jsonResponse => {
+            const playlistId =jsonResponse.id;
+            return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ uris: trackURIs });
+            });
+        });
+    },
+
+    getUserPlaylists() {
+        const accessToken = this.getAccessToken();
+
+        return fetch('https://api.spotify.com/v1/me/playlists', {
+            headers: { Authorization: `Bear ${accessToken}` },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const playlists = data.items.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    tracks: [],
+                }));
+
+                const playlistPromises = playlists.map(playlist => {
+                    return fetch(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    })
+                    .then(response => response.json())
+                    .then(tracksData => {
+                        playlist.tracks = tracksData.items.maps(item => ({
+                            id: item.track.id,
+                            name: item.track.name,
+                            artist: item.track.artists.map(artist => artist.name).join(', '),
+                            album: item.track.album.name,
+                            uri: item.track.uri
+                        }));
+                        return playlist;
+                    });
+                });
+
+                return Promise.all(playlistPromises);
+            });
+    },
+};
+
+export {Spotify};
