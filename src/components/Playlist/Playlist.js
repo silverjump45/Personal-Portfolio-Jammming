@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import './Playlist.css';
 
-import TrackList from '../Tracklist/Tracklist'
+import TrackList from '../TrackList/Tracklist.js'
 
 const Playlist = (props) => {
     const handleNameChange = useCallback(
@@ -18,9 +18,7 @@ const Playlist = (props) => {
                     onChange={handleNameChange}
                     value={props.playlistName || 'New Playlist'}
                     />
-                <FontAwesomeIcon 
-                    icon="fa-regular fa-floppy-disk" 
-                    />
+                <i class="fa-regular fa-floppy-disk"></i>
             </div>
             <div className="Playlist-tracklist">
                 <TrackList tracks={props.playlistTracks} onRemove={props.onRemove} isRemoval={true} />

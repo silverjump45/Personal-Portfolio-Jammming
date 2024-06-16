@@ -6,7 +6,7 @@ import './../../css/ToastifyCustom.css'
 
 import SearchBar from './../SearchBar/SearchBar';
 import SearchResults from './../SearchResults/SearchResults';
-import Playlist from './..Playlist/Playlist';
+import Playlist from './../Playlist/Playlist';
 import UserPlaylist from "../UserPlaylists/UserPlaylists";
 import { Spotify } from "../../util/spotify";
 
